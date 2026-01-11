@@ -2,6 +2,7 @@ from scraper.scraper import fetch_page
 from scraper.parser import extract_title
 from scraper.change_detector import has_changed
 from config.config import load_data, save_data
+from alerts.email_alert import send_email_alert
 
 url = "https://example.com"
 
@@ -12,7 +13,11 @@ data = load_data()
 previous_title = data.get("last_title", "")
 
 if has_changed(previous_title, current_title):
-    print("Change detected!")
+    send_email_alert(
+        subject="Website Change Detected",
+        body=f"Title changed to: {current_title}"
+    )
     save_data({"last_title": current_title})
+    print("Alert sent.")
 else:
     print("No change detected.")
